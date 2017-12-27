@@ -19,7 +19,7 @@ Prereqs:
 #### First Time Set Up
 `yarn install`
 
-*If you are on windows do this first: `npm install --global --production windows-build-tools`*
+*If you are on windows run into build errors from bcrypt or similar do this first: `npm install --global --production windows-build-tools`*
 
 #### Startup (Local)
 `yarn local`

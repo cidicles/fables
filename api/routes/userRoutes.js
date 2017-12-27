@@ -12,10 +12,8 @@ module.exports = function(app) {
   app.route('/user/login')
     .post(passport.authenticate('local'), userList.login);
 
-
-  // Creation
+  // Logout
   app.route('/user/logout')
     .post(userList.logout);
-
 
 };

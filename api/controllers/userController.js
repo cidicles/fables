@@ -12,12 +12,18 @@ const constants = require('../../const');
  * @apiParam {String} username Desired username (unique)
  * @apiParam {String} password Desired password
  *
+ * @apiSuccessExample {json} Success:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "message": "User successfully registered."
+ *     }
+ *
  */
 exports.create_new_User = function(req, res) {
   User.register(new User({username: req.body.username}), req.body.password, function(err) {
     handleError(err, res);
     if(!err){
-      res.json({ message: 'User successfully registered.' });
+      res.status(200).json({ message: 'User successfully registered.' });
     }
   });
 };
@@ -26,6 +32,22 @@ exports.create_new_User = function(req, res) {
  * @api {post} /user/login Logs a User In
  * @apiName Logs a User In
  * @apiGroup User
+ *
+ * @apiParam {String} username username
+ * @apiParam {String} password password
+ *
+ * @apiSuccessExample {json} Success:
+ *     HTTP/1.1 200 OK
+ *     {
+ *          "user": {
+ *              "_id": "_id",
+ *              "salt": "salt",
+ *              "hash": "hash",
+ *              "username": "username",
+ *              "__v": 0
+ *          },
+ *          "token": "JWT"
+ *     }
  *
  */
 exports.login = function(req, res, next) {
@@ -40,6 +62,12 @@ exports.login = function(req, res, next) {
  * @api {post} /user/logout Logs a User Out
  * @apiName Logs a User Out
  * @apiGroup User
+ *
+ * @apiSuccessExample {json} Success:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "message": "User successfully logged out."
+ *     }
  *
  */
 exports.logout = function(req, res) {

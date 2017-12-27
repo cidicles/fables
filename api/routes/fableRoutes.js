@@ -8,7 +8,9 @@ module.exports = function(app) {
 
   // Creation / Viewing Fable
   app.route('/fable/:locale/:page/:limit')
-    .get(fableList.list_all_Fables)
+    .get(fableList.list_all_Fables);
+
+  app.route('/fable')
     .post(authenticate, fableList.create_a_Fable);
 
   // Updating / Deletion of parent Fable

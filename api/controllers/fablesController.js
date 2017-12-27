@@ -33,10 +33,26 @@ exports.list_all_Fables = function(req, res) {
  *
  * @apiParam {String} name Name of the Fable.
  * @apiParam {String} locale Locale of the Fable.
+ * @apiPermission authenticated
+ *
+ * @apiSuccessExample {json} Success:
+ *     HTTP/1.1 200 OK
+ *      {
+ *          "__v": 0,
+ *          "creator": "creator",
+ *          "name": "name",
+ *          "_id": "5a4349c4660c1b7bc200d1e2",
+ *          "locale": [
+ *              "en_us"
+ *          ],
+ *          "created_date": "2017-12-27T07:20:36.305Z",
+ *          "messages": []
+ *      }
  *
  */
 exports.create_a_Fable = function(req, res) {
   let new_Fable = new Fable(req.body);
+  new_Fable.creator = req.user;
   new_Fable.save(function(err, Fable) {
     handleError(err, res);
     res.json(Fable);
@@ -64,6 +80,7 @@ exports.get_a_Fable = function(req, res) {
  * @apiGroup Fables
  *
  * @apiParam {String} collectionId Id of the Fable.
+ * @apiPermission authenticated creator
  *
  */
 exports.update_a_Fable = function(req, res) {
@@ -79,6 +96,7 @@ exports.update_a_Fable = function(req, res) {
  * @apiGroup Fables
  *
  * @apiParam {String} collectionId Id of the Fable.
+ * @apiPermission authenticated creator
  *
  */
 exports.delete_a_Fable = function(req, res) {
@@ -86,7 +104,9 @@ exports.delete_a_Fable = function(req, res) {
     _id: req.params.collectionId
   }, function(err, Fable) {
     handleError(err, res);
-    res.status(200).json({ message: 'Fable successfully deleted' });
+    res.status(200).json({
+      message: 'Fable successfully deleted'
+    });
   });
 };
 
@@ -111,16 +131,29 @@ exports.list_all_Fable_Messages = function(req, res) {
  * @apiGroup Fable Messages
  *
  * @apiParam {String} collectionId Id of the Fable.
+ * @apiPermission authenticated
  *
  */
 exports.create_a_Fable_Message = function(req, res) {
   Fable.findById(req.params.collectionId, function (err, fable) {
     handleError(err, res);
-    fable.messages.push({ messageType: 'text', body: req.body.messages, date: new Date() });
-    fable.save(function(err){
-      handleError(err, res);
-      res.status(200).json({ message: 'Fable Message successfully created.' });
-    });
+    if (req.user !== fable.creator){
+      res.status(500).json({
+        message: 'Not authorized.'
+      });
+    } else {
+      fable.messages.push({
+        messageType: 'text',
+        body: req.body.messages,
+        date: new Date()
+      });
+      fable.save(function(err){
+        handleError(err, res);
+        res.status(200).json({
+          message: 'Fable Message successfully created.'
+        });
+      });
+    }
   })
 };
 
@@ -131,18 +164,33 @@ exports.create_a_Fable_Message = function(req, res) {
  *
  * @apiParam {String} collectionId Id of the Fable.
  * @apiParam {String} messageId Id of the Message.
+ * @apiPermission authenticated creator
  *
  */
 exports.update_a_Fable_Message = function(req, res) {
   Fable.findById(req.params.collectionId, function(err, fable) {
-    let subDoc = fable.messages.id(req.params.messageId);
-    subDoc.set({
-      "body": req.body.messages
-    });
-    fable.save(function(err){
-      handleError(err, res);
-      res.status(200).json({ message: 'Fable Message successfully updated.' });
-    });
+    if (req.user !== fable.creator){
+      res.status(500).json({
+        message: 'Not authorized.'
+      });
+    } else {
+      //
+      let subDoc = fable.messages.id(req.params.messageId);
+      if(!subDoc){
+        res.status(500).json({
+          message: 'Comment not found.'
+        });
+      }
+      subDoc.set({
+        "body": req.body.messages
+      });
+      fable.save(function(err){
+        handleError(err, res);
+        res.status(200).json({
+          message: 'Fable Message successfully updated.'
+        });
+      });
+    }
   });
 };
 
@@ -153,6 +201,7 @@ exports.update_a_Fable_Message = function(req, res) {
  *
  * @apiParam {String} collectionId Id of the Fable.
  * @apiParam {String} messageId Id of the Message.
+ * @apiPermission authenticated creator
  *
  */
 exports.delete_a_Fable_Message = function(req, res) {
@@ -160,7 +209,9 @@ exports.delete_a_Fable_Message = function(req, res) {
     let subDoc = fable.messages.id(req.params.messageId).remove();
     fable.save(function(err){
       handleError(err, res);
-      res.status(200).json({ message: 'Fable Message successfully deleted.' });
+      res.status(200).json({
+        message: 'Fable Message successfully deleted.'
+      });
     });
   });
 };

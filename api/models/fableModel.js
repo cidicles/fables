@@ -9,6 +9,10 @@ const Fable = new Schema({
     type: String,
     required: 'Please enter the name of the Fable'
   },
+  creator: {
+    type: String,
+    required: 'Please enter the creator of the Fable'
+  },
   messages: [{
     messageType: [{
       type: String,
@@ -32,6 +36,8 @@ const Fable = new Schema({
     default: ['en_us'],
     required: 'Please enter the locale of the Fable'
   }
-}, { usePushEach: true });
+}, {
+  usePushEach: true
+});
 
 module.exports = mongoose.model('Fable', Fable);
