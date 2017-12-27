@@ -2,7 +2,7 @@
 
 The fables API.
 
-Docs can be viewed [here](https://cidicles.github.io/Fable/).
+Docs can be viewed [here](https://cidicles.github.io/fables/).
 
 Contains:
 
