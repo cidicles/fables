@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 1337;
 const mongoose = require('mongoose');
 const Fable = require('./api/models/fableModel'); //created model loading here
 const User = require('./api/models/userModel'); //created model loading here
@@ -8,6 +8,10 @@ const bodyParser = require('body-parser');
 const args = process.argv.slice(2);
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const cors = require('cors');
+
+// enable cores application wide
+app.use(cors());
 
 // Auth
 app.use(passport.initialize());

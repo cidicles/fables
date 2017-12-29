@@ -131,7 +131,7 @@ exports.list_all_Fable_Messages = function(req, res) {
  * @apiGroup Fable Messages
  *
  * @apiParam {String} collectionId Id of the Fable.
- * @apiPermission authenticated
+ * @apiPermission authenticated creator
  *
  */
 exports.create_a_Fable_Message = function(req, res) {
@@ -145,6 +145,7 @@ exports.create_a_Fable_Message = function(req, res) {
       fable.messages.push({
         messageType: 'text',
         body: req.body.messages,
+        character: req.body.character,
         date: new Date()
       });
       fable.save(function(err){
@@ -211,6 +212,99 @@ exports.delete_a_Fable_Message = function(req, res) {
       handleError(err, res);
       res.status(200).json({
         message: 'Fable Message successfully deleted.'
+      });
+    });
+  });
+};
+
+////////////////////////////////
+
+/**
+ * @api {post} /fable/characters/:collectionId Create a Fable Character
+ * @apiName Create a Fable Character
+ * @apiGroup Fable Characters
+ *
+ * @apiParam {String} collectionId Id of the Fable.
+ * @apiParam {String} [name] Name of Character.
+ * @apiPermission authenticated creator
+ *
+ */
+exports.create_a_Fable_Character = function(req, res) {
+  Fable.findById(req.params.collectionId, function (err, fable) {
+    handleError(err, res);
+    if (req.user !== fable.creator){
+      res.status(500).json({
+        message: 'Not authorized.'
+      });
+    } else {
+      fable.characters.push({
+        name: req.body.name
+      });
+      fable.save(function(err){
+        handleError(err, res);
+        res.status(200).json({
+          message: 'Fable Character successfully created.'
+        });
+      });
+    }
+  })
+};
+
+/**
+ * @api {put} /fable/characters/:collectionId/:characterId Update a Fable Characters
+ * @apiName Update a Fable Characters
+ * @apiGroup Fable Characters
+ *
+ * @apiParam {String} collectionId Id of the Fable.
+ * @apiParam {String} messageId Id of the Message.
+ * @apiParam {String} [name] Name of Character.
+ * @apiPermission authenticated creator
+ *
+ */
+exports.update_a_Fable_Character = function(req, res) {
+  Fable.findById(req.params.collectionId, function(err, fable) {
+    if (req.user !== fable.creator){
+      res.status(500).json({
+        message: 'Not authorized.'
+      });
+    } else {
+      //
+      let subDoc = fable.characters.id(req.params.messageId);
+      if(!subDoc){
+        res.status(500).json({
+          message: 'Character not found.'
+        });
+      }
+      subDoc.set({
+        "name": req.body.name
+      });
+      fable.save(function(err){
+        handleError(err, res);
+        res.status(200).json({
+          message: 'Fable Character successfully updated.'
+        });
+      });
+    }
+  });
+};
+
+/**
+ * @api {delete} /fable/characters/:collectionId/:characterId Delete a Fable Message
+ * @apiName Delete a Fable Character
+ * @apiGroup Fable Messages
+ *
+ * @apiParam {String} collectionId Id of the Fable.
+ * @apiParam {String} messageId Id of the Character.
+ * @apiPermission authenticated creator
+ *
+ */
+exports.delete_a_Fable_Character = function(req, res) {
+  Fable.findById(req.params.collectionId, function(err, fable) {
+    let subDoc = fable.characters.id(req.params.characterId).remove();
+    fable.save(function(err){
+      handleError(err, res);
+      res.status(200).json({
+        message: 'Fable Character successfully deleted.'
       });
     });
   });

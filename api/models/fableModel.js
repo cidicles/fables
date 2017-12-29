@@ -13,12 +13,16 @@ const Fable = new Schema({
     type: String,
     required: 'Please enter the creator of the Fable'
   },
+  characters: [{
+    name: String
+  }],
   messages: [{
     messageType: [{
       type: String,
       enum: messageTypes
     }],
     body: String,
+    character: String,
     date: {
       type: Date,
       default: Date.now

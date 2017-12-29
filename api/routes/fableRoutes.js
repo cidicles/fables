@@ -27,4 +27,16 @@ module.exports = function(app) {
   app.route('/fable/messages/:collectionId/:messageId')
     .put(authenticate, fableList.update_a_Fable_Message)
     .delete(authenticate, fableList.delete_a_Fable_Message);
+
+  // Management of Fable Characters
+  app.route('/fable/characters/:collectionId')
+    .post(authenticate, fableList.create_a_Fable_Character);
+
+  app.route('/fable/characters/:collectionId/:characterId')
+    .put(authenticate, fableList.update_a_Fable_Character)
+    .delete(authenticate, fableList.delete_a_Fable_Character);
+
+
+
+
 };

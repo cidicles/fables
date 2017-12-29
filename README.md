@@ -8,6 +8,7 @@ Contains:
 
 * [Mongoose](http://mongoosejs.com/)
 * [Express](https://expressjs.com/)
+* [Passport](http://www.passportjs.org/)
 
 Prereqs:
 
