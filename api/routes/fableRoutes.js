@@ -7,36 +7,33 @@ module.exports = function(app) {
   const fableList = require('../controllers/fablesController');
 
   // Creation / Viewing Fable
-  app.route('/fable/:locale/:page/:limit')
+  app.route('/api/fable/:locale/:page/:limit')
     .get(fableList.list_all_Fables);
 
-  app.route('/fable')
+  app.route('/api/fable')
     .post(authenticate, fableList.create_a_Fable);
 
   // Updating / Deletion of parent Fable
-  app.route('/fable/:collectionId')
+  app.route('/api/fable/:collectionId')
     .get(fableList.get_a_Fable)
     .put(authenticate, fableList.update_a_Fable)
     .delete(authenticate, fableList.delete_a_Fable);
 
   // Management of Fable Messages
-  app.route('/fable/messages/:collectionId')
+  app.route('/api/fable/messages/:collectionId')
     .get(fableList.list_all_Fable_Messages)
     .post(authenticate, fableList.create_a_Fable_Message);
 
-  app.route('/fable/messages/:collectionId/:messageId')
+  app.route('/api/fable/messages/:collectionId/:messageId')
     .put(authenticate, fableList.update_a_Fable_Message)
     .delete(authenticate, fableList.delete_a_Fable_Message);
 
   // Management of Fable Characters
-  app.route('/fable/characters/:collectionId')
+  app.route('/api/fable/characters/:collectionId')
     .post(authenticate, fableList.create_a_Fable_Character);
 
-  app.route('/fable/characters/:collectionId/:characterId')
+  app.route('/api/fable/characters/:collectionId/:characterId')
     .put(authenticate, fableList.update_a_Fable_Character)
     .delete(authenticate, fableList.delete_a_Fable_Character);
-
-
-
 
 };

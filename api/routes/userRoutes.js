@@ -5,15 +5,15 @@ module.exports = function(app) {
   const userList = require('../controllers/userController');
 
   // Creation
-  app.route('/user')
+  app.route('/api/user')
     .post(userList.create_new_User);
 
   // Login
-  app.route('/user/login')
+  app.route('/api/user/login')
     .post(passport.authenticate('local'), userList.login);
 
   // Logout
-  app.route('/user/logout')
+  app.route('/api/user/logout')
     .post(userList.logout);
 
 };
