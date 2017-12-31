@@ -131,6 +131,9 @@ exports.list_all_Fable_Messages = function(req, res) {
  * @apiGroup Fable Messages
  *
  * @apiParam {String} collectionId Id of the Fable.
+ * @apiParam {type} type Type of message.
+ * @apiParam {body} body Content of the message.
+ * @apiParam {character} body Character which the message belongs to.
  * @apiPermission authenticated creator
  *
  */
@@ -142,12 +145,21 @@ exports.create_a_Fable_Message = function(req, res) {
         message: 'Not authorized.'
       });
     } else {
-      fable.messages.push({
-        messageType: 'text',
-        body: req.body.messages,
-        character: req.body.character,
-        date: new Date()
-      });
+      if(req.body.type === 'video' && req.body.messages != null){
+        fable.messages.push({
+          messageType: req.body.type,
+          body: req.body.messages.split('v=')[1],
+          character: req.body.character,
+          date: new Date()
+        });
+      } else {
+        fable.messages.push({
+          messageType: req.body.type,
+          body: req.body.messages,
+          character: req.body.character,
+          date: new Date()
+        });
+      }
       fable.save(function(err){
         handleError(err, res);
         res.status(200).json({
