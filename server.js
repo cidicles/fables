@@ -9,9 +9,19 @@ const args = process.argv.slice(2);
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const cors = require('cors');
+const http  = require('http');
+const https  = require('https');
+const fs = require('fs');
+const crypto = require('crypto');
 
 // enable cores application wide
 app.use(cors());
+
+// SSL
+let options = {
+  key: fs.readFileSync('localhost.key'),
+  cert: fs.readFileSync('localhost.cert')
+};
 
 // Auth
 app.use(passport.initialize());
@@ -46,7 +56,9 @@ app.use(function(req, res) {
   res.status(404).send({error: req.originalUrl + ' not found'})
 });
 
-app.listen(port);
+//app.listen(port);
+http.createServer(app).listen(port);
+//https.createServer(options, app).listen(443);
 
 // Because
 const because = require('./because');

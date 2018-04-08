@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const locales = ['en_us'];
-const messageTypes = ['text','image','video'];
+const messageTypes = ['text','image','video', 'narration'];
 
 const Fable = new Schema({
   name: {
